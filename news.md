@@ -1,50 +1,48 @@
 # Daily Threat Intel Report
 **Date:** September 24, 2026
 
-🔴 **Threat Score:** 86/100
-*(Auditable Metrics - Threat Capability: 8/10 | Event Frequency: 9/10 | Business Impact: 9/10)*
+🟠 **Threat Score:** 73/100
+*(Auditable Metrics - Threat Capability: 8/10 | Event Frequency: 6/10 | Business Impact: 8/10)*
 
 **Executive Summary - Incidents:**
-* Revolut Customer Data Breach via Impersonated Government Requests and Subsequent Phishing Campaign
-* "Dark Sourcery" Threat Actors Poison OpenAI and Google AI Chatbots Targeting Chase and Bank of America
-* Active Exploitation of Check Point VPN and Management Server Zero-Days (CVE-2026-85102, CVE-2026-93616)
 * Threat Actors Exploit F5 BIG-IP APM OAuth Zero-Day (CVE-2026-94127) for Remote Code Execution
-* N-able Patches Maximum Severity Pre-Authentication RCE (CVE-2026-86218) in N-central Platform
+* "Dark Sourcery" Threat Actors Poison OpenAI and Google AI Chatbots Targeting Chase and Bank of America
+* Compromised MemTensor Packages Deliver sckit Credential Stealer via npm and PyPI
+* Malicious AI Agents Steal 600K Credit Cards and Infect 100+ Sites
 
 ---
 
-## Revolut Customer Data Breach via Impersonated Government Requests and Subsequent Phishing Campaign
+## Threat Actors Exploit F5 BIG-IP APM OAuth Zero-Day (CVE-2026-94127) for Remote Code Execution
 **Incident Metadata:**
-* **Primary Category:** DATA LEAK
-* **News Nature:** New Attack / Post-mortem
-* **Timeline:** Incident Date: Early September 2026 | Source Publication Date: September 21, 2026
+* **Primary Category:** CRITICAL INFRASTRUCTURE
+* **News Nature:** New Attack
+* **Timeline:** Incident Date: September 2026 | Source Publication Date: September 23, 2026
 * **Impacted Country:** Global
-* **Geolocation / Cloud Region:** Lithuania / European Economic Area (EEA)
-* **List of Companies Impacted:** Revolut, Italian Ministry of the Interior
+* **Geolocation / Cloud Region:** Unknown
+* **List of Companies Impacted:** F5 Networks, Global Enterprise Customers
 
 **Overview**
-Revolut, a major digital banking platform regulated in Lithuania, fell victim to an advanced external impersonation scam that compromised 0.16% of its customer base (approximately 50,150 individuals, including 20,687 in the EEA), specifically targeting high-net-worth cryptocurrency holders. Threat actors successfully bypassed standard internal compliance verification controls by submitting fraudulent Know Your Customer (KYC) and data extraction requests using legitimate, compromised email accounts belonging to the Italian Ministry of the Interior. Starting September 14, 2026, these actors leveraged the exfiltrated data to execute a highly credible SMS phishing (smishing) campaign designed to harvest full login credentials and defeat biometric liveness checks.
+F5 Networks disclosed a critical zero-day vulnerability (CVE-2026-94127) within its BIG-IP Access Policy Manager (APM) module, which is being actively exploited in the wild to achieve Remote Code Execution (RCE) on enterprise networks. The flaw is specifically triggered in environments where the APM is configured to act as an OAuth Authorization Server.
 
 **The Breach Mechanism**
-* **Exploitation of Law Enforcement Trust Mechanisms:** Threat actors initially compromised official Italian government email infrastructure using credentials harvested from infostealer malware logs. Utilizing these authenticated domain accounts, they submitted fraudulent European Investigation Orders (EIOs) to Revolut's compliance department. Because the emails passed DMARC and SPF checks, Revolut employees processed them as legitimate law enforcement activities.
-* **SMS Thread Hijacking and Liveness Bypass:** Following the exfiltration, attackers initiated a targeted smishing campaign. Utilizing SMS spoofing, malicious messages appeared within the exact same conversational thread as historic Revolut notifications. Victims clicking the links were redirected to a fraudulent web application that requested camera access, fabricating a live-video identity check to harvest biometric media and plaintext passwords.
+* **OAuth Profile Exploitation:** Threat actors exploit this configuration by sending maliciously crafted, oversized network requests that trigger a heap-based buffer overflow in the memory space allocated for the OAuth transaction. This allows the attacker to execute arbitrary commands at the system level or trigger a fatal abort signal (TMM SIGABRT).
 
 **Impact and Consequences**
-* **Systemic Reputational and Regulatory Damage:** The breach exposes fundamental flaws in the manual verification of third-party data requests. Under GDPR and DORA, the failure to authenticate inbound government requests introduces massive regulatory liability.
-* **Long-Term Identity Theft and Account Takeover Risks:** The threat actors successfully exfiltrated complete identity kits. The granularity of the stolen data provides attackers with the exact collateral required to socially engineer telecommunications providers (SIM swapping) or defeat secondary banking verification protocols.
+* **Authentication Proxy Compromise:** By hijacking the OAuth token generation process, attackers can mint golden tickets, effectively bypassing all primary enterprise authentication checks and assuming the identity of any user in the network.
+* **Widespread Denial of Service:** In high-availability banking environments, repeated crashes of the APM module will result in a catastrophic denial of service.
 
 **Proposed Control: Mitigating Threats**
-* **I. Governance & Containment (Prevention):** Mandate out-of-band verification protocols (e.g., secure portal communication, direct legal counsel liaison) for all inbound law enforcement and government data requests.
-* **II. Identity & Access Management (Containment):** Implement continuous behavioral biometric profiling during the authentication lifecycle to detect anomalies indicative of injected or hijacked biometric video streams.
-* **III. Infrastructure Intelligence (Detection):** Deploy advanced mobile threat defense (MTD) SDKs within the core banking application to detect concurrent SMS spoofing attempts.
-* **IV. Operational Resilience:** Establish a rapid-response data quarantine protocol that instantly forces password resets and flags accounts queried by a compromised external entity.
-* **V. Simulation environment:** Conduct quarterly red-team exercises simulating authenticated compliance channel hijacking.
+* **I. Governance & Containment (Prevention):** Immediately deploy the official F5 security updates or directly apply the F5-provided mitigation iRule to all affected virtual servers.
+* **II. Identity & Access Management (Containment):** Audit all BIG-IP APM configurations. Instances operating as an OAuth Authorization Server must be tightly monitored or temporarily isolated behind additional WAF inspection layers.
+* **III. Infrastructure Intelligence (Detection):** Configure SIEM rules to alert on the sequence of multiple OAuth authentication failures immediately followed by TMM SIGABRT core dump events.
+* **IV. Operational Resilience:** Ensure robust High Availability (HA) failover clustering is active, and configure rate-limiting on inbound OAuth requests.
+* **V. Simulation environment:** Replicate the OAuth authorization flow within a staging environment to safely test the performance and stability impacts of the mitigation iRule.
 
 **Conclusion**
-The Revolut incident illustrates a paradigm shift where attackers bypass hardened technical perimeters by exploiting the legal and compliance obligations of financial institutions. By weaponizing the inherent trust in sovereign government communications, threat actors have established a highly effective pathway to orchestrate large-scale account takeovers.
+Defending edge access devices requires a zero-tolerance policy for unpatched vulnerabilities, as they represent the single point of failure for zero-trust architectures.
 
 **Further Reading**
-https://www.infosecurity-magazine.com/news/revolut-customers-targeted-wave/
+https://www.bleepingcomputer.com/news/security/f5-warns-of-big-ip-apm-remote-code-execution-zero-day-exploited-in-attacks/
 
 ---
 
@@ -83,104 +81,70 @@ https://www.darkreading.com/threat-intelligence/attackers-manipulate-ai-chatbots
 
 ---
 
-## Active Exploitation of Check Point VPN and Management Server Zero-Days (CVE-2026-85102, CVE-2026-93616)
+## Compromised MemTensor Packages Deliver sckit Credential Stealer via npm and PyPI
 **Incident Metadata:**
-* **Primary Category:** CRITICAL INFRASTRUCTURE
-* **News Nature:** Patch Update / New Attack
-* **Timeline:** Incident Date: July 23 - September 12, 2026 | Source Publication Date: September 22, 2026
+* **Primary Category:** SUPPLY CHAIN
+* **News Nature:** New attack
+* **Timeline:** Incident Date: September 2026 | Source Publication Date: September 23, 2026
 * **Impacted Country:** Global
-* **Geolocation / Cloud Region:** Unknown
-* **List of Companies Impacted:** Check Point Software, Global Enterprise Customers
+* **Geolocation / Cloud Region:** npm and PyPI repositories
+* **List of Companies Impacted:** MemTensor (package maintainers)
 
 **Overview**
-Check Point Software released emergency hotfixes for two critical, actively exploited zero-day vulnerabilities affecting its Security Gateway VPN and Security Management Server products. The flaws allow unauthenticated remote attackers to execute arbitrary code and upload malicious scripts, leading to full systemic network compromise.
+Threat actors compromised legitimate MemTensor packages on npm and PyPI to distribute a Go-based credential stealer named "sckit". This malware targets Windows, Linux, and macOS environments to exfiltrate sensitive data.
 
 **The Breach Mechanism**
-* **Pre-Authentication Path Traversal (CVE-2026-93616):** Unauthenticated attackers upload and execute arbitrary scripts on port TCP/19009 by sending anomalous login requests featuring massively padded username strings exceeding 1,000 characters.
-* **VPN Certificate Handling RCE (CVE-2026-85102):** By routing traffic through proxy networks and leveraging specifically crafted certificates, attackers achieved remote code execution prior to any authentication mechanism, bypassing MFA prompts.
+* **Repository Poisoning:** Attackers gained unauthorized access to the MemTensor account or infrastructure to push malicious versions of the `@memtensor/memos-cloud-openclaw-plugin` package to npm and PyPI.
+* **Cross-Platform Payload:** The "sckit" implant is designed to execute on multiple operating systems, leveraging the trust inherent in software supply chains to deliver malware to developers and automated build systems.
 
 **Impact and Consequences**
-* **Total Security Perimeter Collapse:** The compromise of a Security Management Server allows threat actors to arbitrarily modify firewall rules, intercept clear-text traffic, deploy malicious firmware updates, and pivot directly into the internal corporate network.
-* **Widespread Exploitation Campaign:** The dual-pronged approach of targeting both the VPN gateway and the centralized management console maximizes the probability of establishing persistent, highly privileged access.
+* **Credential Theft:** The malware is specifically engineered to harvest credentials, potentially leading to lateral movement within corporate networks.
+* **Supply Chain Contamination:** Downstream users who updated their dependencies automatically may have inadvertently executed the malicious code within their CI/CD pipelines.
 
 **Proposed Control: Mitigating Threats**
-* **I. Governance & Containment (Prevention):** Immediately apply Check Point LivePatch Take 26 (or subsequent Jumbo Hotfixes) across all supported gateways. If impossible, disable VPN implied rules.
-* **II. Identity & Access Management (Containment):** Ensure that access to the Security Management Server (TCP/19009) is strictly limited to heavily authenticated, internal administration subnets via jump hosts with mandatory MFA.
-* **III. Infrastructure Intelligence (Detection):** Query SIEM platforms for anomalous login requests exceeding 1,000 characters in the cpm.elg logs.
-* **IV. Operational Resilience:** Segment the management plane from the data plane across all critical security appliances.
-* **V. Simulation environment:** Conduct assumed-breach tabletop exercises detailing the immediate revocation and rebuilding of the entire perimeter security policy.
+* **I. Governance & Containment (Prevention):** Implement strict dependency pinning and hash verification for all third-party packages.
+* **II. Identity & Access Management (Containment):** Enforce Multi-Factor Authentication (MFA) for all developer accounts with publishing rights to public repositories.
+* **III. Infrastructure Intelligence (Detection):** Deploy automated Software Composition Analysis (SCA) tools to scan for anomalous code changes in dependencies.
+* **IV. Operational Resilience:** Isolate build environments from the production network to limit the blast radius of compromised dependencies.
+* **V. Simulation environment:** Conduct regular "Dependency Confusion" and "Supply Chain" attack simulations to test detection capabilities.
 
 **Conclusion**
-The concurrent active exploitation of both the enforcement gateway and the central management server represents a worst-case scenario for enterprise perimeter defense.
+This incident highlights the persistent risk of supply chain attacks targeting open-source repositories. Organizations must treat third-party code as untrusted and implement rigorous validation processes.
 
 **Further Reading**
-https://www.bleepingcomputer.com/news/security/check-point-warns-of-hackers-exploiting-security-gateway-vpn-rce-flaw/
+https://thehackernews.com/2026/09/compromised-memtensor-packages-deliver.html
 
 ---
 
-## Threat Actors Exploit F5 BIG-IP APM OAuth Zero-Day (CVE-2026-94127) for Remote Code Execution
+## Malicious AI Agents Steal 600K Credit Cards and Infect 100+ Sites
 **Incident Metadata:**
-* **Primary Category:** CRITICAL INFRASTRUCTURE
-* **News Nature:** New Attack
+* **Primary Category:** AI
+* **News Nature:** New attack
 * **Timeline:** Incident Date: September 2026 | Source Publication Date: September 23, 2026
 * **Impacted Country:** Global
 * **Geolocation / Cloud Region:** Unknown
-* **List of Companies Impacted:** F5 Networks, Global Enterprise Customers
+* **List of Companies Impacted:** 100+ online retailers
 
 **Overview**
-F5 Networks disclosed a critical zero-day vulnerability (CVE-2026-94127) within its BIG-IP Access Policy Manager (APM) module, which is being actively exploited in the wild to achieve Remote Code Execution (RCE) on enterprise networks. The flaw is specifically triggered in environments where the APM is configured to act as an OAuth Authorization Server.
+A financially motivated threat actor is utilizing open-source AI agent frameworks to automate the infection of online retail websites with digital skimmers, resulting in the theft of over 600,000 credit card records.
 
 **The Breach Mechanism**
-* **OAuth Profile Exploitation:** Threat actors exploit this configuration by sending maliciously crafted, oversized network requests that trigger a heap-based buffer overflow in the memory space allocated for the OAuth transaction. This allows the attacker to execute arbitrary commands at the system level or trigger a fatal abort signal (TMM SIGABRT).
+* **AI-Driven Automation:** The attackers weaponized autonomous AI agents to automate the reconnaissance and exploitation phases, significantly increasing the speed and scale of the campaign to identify vulnerabilities in more than 100 e-commerce platforms.
+* **Digital Skimming:** Once a site is compromised, the agents inject scripts designed to intercept and exfiltrate payment information entered by customers during checkout.
 
 **Impact and Consequences**
-* **Authentication Proxy Compromise:** By hijacking the OAuth token generation process, attackers can mint golden tickets, effectively bypassing all primary enterprise authentication checks and assuming the identity of any user in the network.
-* **Widespread Denial of Service:** In high-availability banking environments, repeated crashes of the APM module will result in a catastrophic denial of service.
+* **Massive Data Theft:** The exfiltration of 600,000 credit card records represents a significant financial and regulatory risk for the affected retailers and their payment processors.
+* **Operational Disruption:** Affected sites must undergo extensive remediation to remove the malicious scripts and ensure the integrity of their payment processing systems.
 
 **Proposed Control: Mitigating Threats**
-* **I. Governance & Containment (Prevention):** Immediately deploy the official F5 security updates or directly apply the F5-provided mitigation iRule to all affected virtual servers.
-* **II. Identity & Access Management (Containment):** Audit all BIG-IP APM configurations. Instances operating as an OAuth Authorization Server must be tightly monitored or temporarily isolated behind additional WAF inspection layers.
-* **III. Infrastructure Intelligence (Detection):** Configure SIEM rules to alert on the sequence of multiple OAuth authentication failures immediately followed by TMM SIGABRT core dump events.
-* **IV. Operational Resilience:** Ensure robust High Availability (HA) failover clustering is active, and configure rate-limiting on inbound OAuth requests.
-* **V. Simulation environment:** Replicate the OAuth authorization flow within a staging environment to safely test the performance and stability impacts of the mitigation iRule.
+* **I. Governance & Containment (Prevention):** Implement Content Security Policy (CSP) headers to restrict the execution of unauthorized scripts on payment pages.
+* **II. Identity & Access Management (Containment):** Restrict administrative access to e-commerce platforms and enforce strict API key management.
+* **III. Infrastructure Intelligence (Detection):** Deploy real-time monitoring for unauthorized changes to website source code and outbound network traffic.
+* **IV. Operational Resilience:** Maintain offline backups of website configurations to facilitate rapid recovery in the event of a compromise.
+* **V. Simulation environment:** Use AI-based security agents to perform red-teaming exercises against the organization's own web infrastructure.
 
 **Conclusion**
-Defending edge access devices requires a zero-tolerance policy for unpatched vulnerabilities, as they represent the single point of failure for zero-trust architectures.
+The weaponization of AI agents for large-scale cybercrime marks a significant evolution in the threat landscape, requiring more proactive and automated defense mechanisms.
 
 **Further Reading**
-https://www.bleepingcomputer.com/news/security/f5-warns-of-big-ip-apm-remote-code-execution-zero-day-exploited-in-attacks/
-
----
-
-## N-able Patches Maximum Severity Pre-Authentication RCE (CVE-2026-86218) in N-central Platform
-**Incident Metadata:**
-* **Primary Category:** SUPPLY CHAIN
-* **News Nature:** Patch Update
-* **Timeline:** Incident Date: September 6, 2026 | Source Publication Date: September 7, 2026
-* **Impacted Country:** Global
-* **Geolocation / Cloud Region:** Unknown
-* **List of Companies Impacted:** N-able, Managed Service Providers (MSPs)
-
-**Overview**
-N-able released an emergency hotfix to address a maximum-severity (CVSS 10) Remote Code Execution vulnerability in its N-central remote monitoring and management (RMM) platform, posing an imminent threat to global IT supply chains.
-
-**The Breach Mechanism**
-* **Pre-Authentication Remote Code Execution:** The vulnerability allows an entirely unauthenticated, remote attacker to execute arbitrary code directly on the central N-central server without user interaction.
-* **Complete Infrastructure Subversion:** Because the N-central server maintains persistent, highly privileged administrative connections to thousands of downstream client endpoints, achieving RCE provides the attacker with automatic access to deploy payloads simultaneously.
-
-**Impact and Consequences**
-* **Cascading Supply Chain Compromise:** A compromise of the RMM server allows threat actors to mass-deploy ransomware to all downstream clients, utilizing the MSP as a distribution conduit.
-* **Bypass of Perimeter Defenses:** The administrative tunnel created by the RMM agent inherently bypasses downstream client firewalls.
-
-**Proposed Control: Mitigating Threats**
-* **I. Governance & Containment (Prevention):** Mandate immediate cryptographic verification that N-central 2026.3 Hotfix 4 has been successfully deployed.
-* **II. Identity & Access Management (Containment):** Restrict internet exposure of the N-central web interface and implement strict IP allow-listing.
-* **III. Infrastructure Intelligence (Detection):** Monitor child processes spawned by the N-central agent (N-able.exe) on all banking endpoints.
-* **IV. Operational Resilience:** Enforce stringent vendor risk management (VRM) policies requiring rapid SBOM and patch compliance disclosure.
-* **V. Simulation environment:** Conduct purple-team exercises simulating an RMM supply-chain compromise.
-
-**Conclusion**
-Securing the enterprise requires rigorous policing of the administrative tools used by third-party vendors, as trust is the most exploited vulnerability.
-
-**Further Reading**
-https://www.infosecurity-magazine.com/news/nable-hotfix-critical-rce/
+https://www.bleepingcomputer.com/news/security/malicious-ai-agents-steal-600k-credit-cards-infect-100-plus-sites-with-skimmers/
