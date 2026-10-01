@@ -1,22 +1,6 @@
-# Partie 1 : Réflexion sur l'architecture du document
+# Executive Summary
 
-Pour présenter efficacement un document de recherche très technique de 29 pages (rédigé par des chercheurs de Google Brain, OpenAI et Stanford) à un décideur, il est impératif de s'éloigner du jargon du Machine Learning (réseaux de neurones, fonctions de perte, apprentissage par renforcement).
-
-**L'architecture retenue pour l'Executive Summary repose sur la pyramide inversée :**
-
-1. **L'essentiel en 30 secondes (TL;DR)** : Fournir immédiatement le message clé à retenir si votre boss manque de temps.
-
-2. **Le Contexte / L'Enjeu** : Traduire l'article de recherche en enjeu d'entreprise (gestion des risques et fiabilité).
-
-3. **Les 5 failles opérationnelles** : C'est le cœur du papier. Plutôt que de les présenter comme des défis mathématiques, chaque problème sera vulgarisé et accompagné d'un "Exemple métier" pour illustrer concrètement le risque.
-
-4. **Recommandations stratégiques** : Transformer ces constats en actions ou principes de précaution concrets pour les futurs projets IA de l'entreprise.
-
----
-
-# Partie 2 : Executive Summary
-
-**Document source :** *Concrete Problems in AI Safety* (Amodei et al., 2016 - arXiv:1606.06565).
+**Document source :** [*Concrete Problems in AI Safety* (Amodei et al., 2016 - arXiv:1606.06565)](https://arxiv.org/pdf/1606.06565).
 
 ### 1. L'essentiel en 30 secondes (TL;DR)
 
