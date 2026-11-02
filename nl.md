@@ -106,4 +106,3 @@ Qualcomm announced plans to challenge established chipmakers in data center hard
 
 ***
 
-💡 **Souhaitez-vous générer un rapport PDF de cette synthèse ou créer une présentation visuelle / infographie basée sur ces faits pour votre comité de direction ?**
