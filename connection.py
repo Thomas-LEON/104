@@ -1,7 +1,4 @@
-"""
-Script complet de diagnostic, découverte automatique des modèles et test de connexion au LLM CIB.
-Aucun gros traceback : affiche étape par étape ce qui marche ou pourquoi ça bloque.
-"""
+
 
 import os
 import sys
